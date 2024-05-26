@@ -6,7 +6,7 @@
 /*   By: yitoh <yitoh@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/23 14:25:08 by yitoh         #+#    #+#                 */
-/*   Updated: 2024/04/28 17:59:31 by yitoh         ########   odam.nl         */
+/*   Updated: 2024/05/26 15:26:01 by yitoh         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,49 +14,50 @@
 
 Fixed::Fixed() : _x(0)
 {
-    std::cout << "Default constructor called" << std::endl;
+    // std::cout << "Default constructor called" << std::endl;
 }
 
 Fixed::Fixed(const int a)
 {
-    std::cout << "Int constructor called" << std::endl;
-    _x = a * pow(2, _y);
+    // std::cout << "Int constructor called" << std::endl;
+    _x = a * (1 << _y);
 }
 
 
 Fixed::Fixed(const float f)
 {
-    std::cout << "Float constructor called" << std::endl;
-    _x = round(f * pow(2, _y));
+    // std::cout << "Float constructor called" << std::endl;
+    _x = roundf(f * (1 << _y));
 }
 
 Fixed::Fixed(const Fixed& F)
 {
-    std::cout << "Copy constructor called" << std::endl;
+    // std::cout << "Copy constructor called" << std::endl;
     operator=(F);
 }
 
 Fixed::~Fixed()
 {
-    std::cout << "Destructor called" << std::endl;
+    // std::cout << "Destructor called" << std::endl;
 }
 
 void Fixed::operator=(const Fixed& F)
 {
     if (this == &F)
         return ;
-    std::cout << "Copy assignment operator called" << std::endl;
-    _x = F._x;
+    // std::cout << "Copy assignment operator called" << std::endl;
+    _x = F.getRawBits();
 }
 
 int   Fixed::getRawBits(void) const
 {
-    std::cout << "getRawbits member function called" << std::endl;
+    // std::cout << "getRawbits member function called" << std::endl;
     return(_x);
 }
 
 void Fixed::setRawBits(int const raw)
 {
+    // std::cout << "setRawbits member function called" << std::endl;
     _x = raw;
 }
 
@@ -72,42 +73,42 @@ int Fixed::toInt(void) const
 
 bool Fixed::operator>(Fixed& rhs)
 {
-    if (this->_x > rhs._x)
+    if (_x > rhs.getRawBits())
         return true;
     return false;
 }
 
 bool Fixed::operator<(Fixed& rhs)
 {
-    if (this->_x > rhs._x)
+    if (_x > rhs.getRawBits())
         return true;
     return false;
 }
 
 bool Fixed::operator>=(Fixed& rhs)
 {
-    if (this->_x >= rhs._x)
+    if (_x >= rhs.getRawBits())
         return true;
     return false;
 }
 
 bool Fixed::operator<=(Fixed& rhs)
 {
-    if (this->_x <= rhs._x)
+    if (_x <= rhs.getRawBits())
         return true;
     return false;
 }
 
 bool Fixed::operator==(Fixed& rhs)
 {
-    if (this->_x == rhs._x)
+    if (_x == rhs.getRawBits())
         return true;
     return false;
 }
 
 bool Fixed::operator!=(Fixed& rhs)
 {
-    if (this->_x != rhs._x)
+    if (_x != rhs.getRawBits())
         return true;
     return false;
 }
@@ -139,7 +140,7 @@ Fixed Fixed::operator*(const Fixed &rhs)
 Fixed Fixed::operator/(const Fixed &rhs)
 {
     Fixed   cp;
-    cp.setRawBits((_x / rhs.getRawBits()) >> _y);
+    cp.setRawBits((_x / rhs.getRawBits()) << _y);
     return (cp);
 }
 
@@ -156,16 +157,17 @@ Fixed Fixed::operator++(int)
     return(cp);
 }
 
-Fixed& Fixed::operator--()
+Fixed Fixed::operator--()
 {
-    return(*this);
+    Fixed   cp = *this;
+    setRawBits(_x - 1);
+    return(cp);
 }
 
 Fixed Fixed::operator--(int)
 {
-    Fixed   cp = *this;
-    operator--();
-    return(cp);
+    this->setRawBits(_x - 1);
+    return(*this);
 }
 
 Fixed& Fixed::max(Fixed& a, Fixed& b)

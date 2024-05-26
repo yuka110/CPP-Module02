@@ -6,7 +6,7 @@
 /*   By: yitoh <yitoh@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/23 14:23:08 by yitoh         #+#    #+#                 */
-/*   Updated: 2024/04/28 17:59:21 by yitoh         ########   odam.nl         */
+/*   Updated: 2024/05/26 15:06:49 by yitoh         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,18 @@ private:
     
 public:
     Fixed();
-    Fixed(const int a);
-    Fixed(const float f);
     Fixed(const Fixed& F);
+    void operator=(const Fixed& F);
     ~Fixed();
+    
     int getRawBits(void) const;
     void setRawBits(int const raw);
+    
+    Fixed(const int a);
+    Fixed(const float f);
+    
     float toFloat(void) const;
     int toInt(void) const;
-    void operator=(const Fixed& F);
 
 //Relational operators
     bool operator>(Fixed& rhs);
@@ -53,7 +56,7 @@ public:
 //Increment and decrement operator
     Fixed& operator++();
     Fixed operator++(int);
-    Fixed& operator--();
+    Fixed operator--();
     Fixed operator--(int);
 
     static Fixed& max(Fixed& a, Fixed& b);
